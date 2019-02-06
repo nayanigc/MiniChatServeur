@@ -231,7 +231,7 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 			cho.sendRoomMessage(room, from, message);
 		}
 	}
-///FILE
+//FILE
 	public void sendFile(String to, String fName, File f) {
 		ChatModel.sendFile(name, to, fName, f);
 		f.delete();
