@@ -1,11 +1,12 @@
 package basic;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class ChatModel {
+public class ChatModel  {
 	private static final TreeMap<String, ChatModelEvents> clientList = new TreeMap<>();
 
 	public static synchronized boolean registerUser(String name, ChatModelEvents client) {
@@ -127,5 +128,25 @@ public class ChatModel {
 			}
 		return false;
 	}
-
+	public static void sendFile(String from, String to, String fName, File f) {
+		if(existUserName(to) && existUserName(from)) {
+		clientList.get(to).fileSent(from, fName, f);
+		}
+	}
+	
+	public static void sendProposeFile(String from,String to, String fName) {
+		if(existUserName(to) && existUserName(from)) {
+			clientList.get(to).sendProposeFile(from, fName);
+		}
+	}
+	public static void sendAcceptFile(String from,String to, String fName) {
+		if(existUserName(to) && existUserName(from)) {
+			clientList.get(from).sendAcceptFile(from, fName);
+		}
+	}
+	public static void sendRefusFile(String from,String to, String fName) {
+		if(existUserName(to) && existUserName(from)) {
+			clientList.get(from).sendRefusFile(from, fName);
+		}
+	}
 }

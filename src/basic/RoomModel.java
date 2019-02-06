@@ -39,7 +39,7 @@ public class RoomModel {
 	}
 
 	public synchronized boolean canDelete(String name) {
-		return !name.equals(master);
+		return name.equals(master);
 	}
 
 	public synchronized Collection<String> userList() {

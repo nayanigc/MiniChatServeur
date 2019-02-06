@@ -1,4 +1,5 @@
 package basic;
+import java.io.File;
 import java.util.Collection;
 
 public interface ChatProtocol {
@@ -23,5 +24,9 @@ public interface ChatProtocol {
 	default void sendAskRoomUserList (String room) {}
 	default void sendRoomUserList(Collection <String> ulist,String room) {}
 	default void sendEror(String string) {}
-	
+	//////////////////////////////////////////////
+	default void sendProposeFile(String user, String fichier) {}
+	default void sendAcceptFile(String user, String fichier) {}
+	default void sendRefusFile(String user, String fichier) {}
+	default void sendFile(String nameFile,String fName, File f) {}
 }

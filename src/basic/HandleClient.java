@@ -1,5 +1,6 @@
 package basic;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -103,9 +104,7 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 			if (name != null)
 				ChatModel.unregisterUser(name);
 			logger.clientDisconnected(s.toString(), name);
-			/*
-			 * if (!stop) { finish(); }
-			 */
+			
 		}
 		// TODO Auto-generated method stub
 
@@ -184,9 +183,45 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 	@Override
 	public void roomUserListChanged(String room) {
 		// TODO Auto-generated method stub
-		if (state == ClientState.ST_INIT) return;
+		if (state == ClientState.ST_INIT)
+			return;
 		cho.sendRoomUserList(ChatModel.roomGetUserList(room), room);
 
+	}
+
+	@Override
+	public void deleteRoom(String room) {
+		if (state != ClientState.ST_INIT) {
+			ChatModel.deleteRoom(room, name);
+			cho.deleteRoom(room);
+		} else {
+			cho.sendEror("le room n'existe pas");
+		}
+
+	}
+
+	@Override
+	public void enterRoom(String room) {
+		if (ChatModel.existRoom(room)) {
+			ChatModel.enterRoom(room, name);
+			// cho.enterRoom(room);
+		} else {
+			cho.sendEror("le room n'existe pas");
+			return;
+		}
+	}
+
+	@Override
+	public void leaveRoom(String room) {
+		if (ChatModel.existRoom(room)) {
+			if (ChatModel.existUserName(name)) {
+				ChatModel.leaveRoom(room, name);
+				// cho.leaveRoom(room);
+			}
+		} else {
+			cho.sendEror("le room n'existe pas");
+			return;
+		}
 	}
 
 	@Override
@@ -196,5 +231,23 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 			cho.sendRoomMessage(room, from, message);
 		}
 	}
+///FILE
+	public void sendFile(String to, String fName, File f) {
+		ChatModel.sendFile(name, to, fName, f);
+		f.delete();
+	}
 
+	public void fileSent(String from, String fName, File f) {
+		cho.sendFile(from, fName, f);
+	}
+	public void sendProposeFile(String to, String fName) {
+		ChatModel.sendProposeFile(name,to,fName);
+	}
+	
+	public void sendAcceptFile(String to, String fName) {
+		ChatModel.sendAcceptFile(name,to,fName);
+	}
+	public void sendRefusFile(String to, String fName) {
+		ChatModel.sendRefusFile(name,to,fName);
+	}
 }
