@@ -136,17 +136,17 @@ public class ChatModel  {
 	
 	public static void sendProposeFile(String from,String to, String fName) {
 		if(existUserName(to) && existUserName(from)) {
-			clientList.get(to).sendProposeFile(from, fName);
+			clientList.get(to).proposeFileSent(from, fName);
 		}
 	}
 	public static void sendAcceptFile(String from,String to, String fName) {
 		if(existUserName(to) && existUserName(from)) {
-			clientList.get(from).sendAcceptFile(from, fName);
+			clientList.get(from).acceptFileSent(from, fName);
 		}
 	}
 	public static void sendRefusFile(String from,String to, String fName) {
 		if(existUserName(to) && existUserName(from)) {
-			clientList.get(from).sendRefusFile(from, fName);
+			clientList.get(from).refusFileSent(from, fName);
 		}
 	}
 }

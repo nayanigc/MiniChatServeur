@@ -2,7 +2,9 @@ package basic;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 
@@ -27,7 +29,6 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 	}
 
 	public synchronized void finish() {
-
 		try {
 			s.close();
 		} catch (IOException ex) {
@@ -104,7 +105,7 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 			if (name != null)
 				ChatModel.unregisterUser(name);
 			logger.clientDisconnected(s.toString(), name);
-			
+
 		}
 		// TODO Auto-generated method stub
 
@@ -231,23 +232,47 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 			cho.sendRoomMessage(room, from, message);
 		}
 	}
-//FILE
-	public void sendFile(String to, String fName, File f) {
-		ChatModel.sendFile(name, to, fName, f);
-		f.delete();
-	}
+
+	// FILE
+	//private ArrayList<String> acceptFile = new ArrayList<String>();
 
 	public void fileSent(String from, String fName, File f) {
 		cho.sendFile(from, fName, f);
 	}
+
+	public void sendFile(String to, String fName, File f) {
+		//if (acceptFile.contains(fName)) {
+			ChatModel.sendFile(name, to, fName, f);
+			f.delete();
+		//}
+	}
+
 	public void sendProposeFile(String to, String fName) {
-		ChatModel.sendProposeFile(name,to,fName);
+		ChatModel.sendProposeFile(name, to, fName);
 	}
-	
+
+	public void proposeFileSent(String from, String fName) {
+		cho.sendProposeFile(from, fName);
+	}
+
+	public void fileProposeSent(String from, String fName, File f) {
+		cho.sendFile(from, fName, f);
+	}
+
 	public void sendAcceptFile(String to, String fName) {
-		ChatModel.sendAcceptFile(name,to,fName);
+		//acceptFile.add(fName);
+		ChatModel.sendAcceptFile(name, to, fName);
 	}
+
+	public void acceptFileSent(String to, String fName) {
+		cho.sendAcceptFile(to, fName);
+	}
+
 	public void sendRefusFile(String to, String fName) {
-		ChatModel.sendRefusFile(name,to,fName);
+		ChatModel.sendRefusFile(name, to, fName);
+	}
+
+	public void refusFileSent(String to, String fName) {
+		cho.sendRefusFile(to, fName);
 	}
 }

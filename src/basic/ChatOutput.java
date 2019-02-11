@@ -13,6 +13,7 @@ public class ChatOutput implements ChatProtocol {
 
 	public ChatOutput(OutputStream out) throws IOException {
 		this.os = new PrintWriter(out, true);
+		this.oso = out;
 	}
 
 	public synchronized void sendName(String name) {

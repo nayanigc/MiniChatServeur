@@ -137,7 +137,7 @@ public class ChatInput {
 					strName = is.readLine();
 					String FName3 = is.readLine();
 					int FSize = Integer.parseInt(is.readLine());
-					File f = File.createTempFile(FName3, "t");
+					File f = File.createTempFile(FName3, "txt");
 					try (FileOutputStream fo = new FileOutputStream(f)) {
 						byte buf[] = new byte [8192];
 						int len = 0;
