@@ -241,11 +241,26 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 	}
 
 	public void sendFile(String to, String fName, File f) {
-		//if (acceptFile.contains(fName)) {
-			ChatModel.sendFile(name, to, fName, f);
-			f.delete();
-		//}
+		//sendfile.put(to,f);
+		sendProposeFile(to,fName);
+		try {
+			Thread.sleep(20000);
+			if(ChatModel.acceptfile.contains(to)) {		
+				ChatModel.sendFile(name, to, fName, f);
+			}else {
+			cho.sendEror("Temps d'attente dépasé");
+			}
+			ChatModel.acceptfile.remove(to);
+			ChatModel.sendfile.remove(name);
+		    f.delete();
+				
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
+	
 
 	public void sendProposeFile(String to, String fName) {
 		ChatModel.sendProposeFile(name, to, fName);
@@ -260,11 +275,14 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 	}
 
 	public void sendAcceptFile(String to, String fName) {
-		//acceptFile.add(fName);
+		ChatModel.acceptfile.add(name);
 		ChatModel.sendAcceptFile(name, to, fName);
 	}
 
 	public void acceptFileSent(String to, String fName) {
+		if(ChatModel.sendfile.containsKey(name)) {
+			ChatModel.sendFile(to,name, fName,ChatModel.sendfile.get(fName));
+		}
 		cho.sendAcceptFile(to, fName);
 	}
 
