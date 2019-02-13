@@ -234,33 +234,16 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 	}
 
 	// FILE
-	//private ArrayList<String> acceptFile = new ArrayList<String>();
 
 	public void fileSent(String from, String fName, File f) {
 		cho.sendFile(from, fName, f);
 	}
 
 	public void sendFile(String to, String fName, File f) {
-		//sendfile.put(to,f);
-		sendProposeFile(to,fName);
-		try {
-			Thread.sleep(20000);
-			if(ChatModel.acceptfile.contains(to)) {		
-				ChatModel.sendFile(name, to, fName, f);
-			}else {
-			cho.sendEror("Temps d'attente dépasé");
-			}
-			ChatModel.acceptfile.remove(to);
-			ChatModel.sendfile.remove(name);
-		    f.delete();
-				
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		ChatModel.sendFile(name, to, fName, f);
+		f.delete();
+
 	}
-	
 
 	public void sendProposeFile(String to, String fName) {
 		ChatModel.sendProposeFile(name, to, fName);
@@ -275,15 +258,12 @@ public class HandleClient implements Runnable, ChatProtocol, ChatModelEvents {
 	}
 
 	public void sendAcceptFile(String to, String fName) {
-		ChatModel.acceptfile.add(name);
 		ChatModel.sendAcceptFile(name, to, fName);
 	}
 
-	public void acceptFileSent(String to, String fName) {
-		if(ChatModel.sendfile.containsKey(name)) {
-			ChatModel.sendFile(to,name, fName,ChatModel.sendfile.get(fName));
-		}
-		cho.sendAcceptFile(to, fName);
+	public void acceptFileSent(String from, String fName) {
+
+		cho.sendAcceptFile(from, fName);
 	}
 
 	public void sendRefusFile(String to, String fName) {

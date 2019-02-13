@@ -7,10 +7,10 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class ChatModel  {
+public class ChatModel {
 	private static final TreeMap<String, ChatModelEvents> clientList = new TreeMap<>();
-	static TreeMap <String,File> sendfile = new TreeMap <String,File> ();
-	static  ArrayList <String> acceptfile = new ArrayList <String>();
+	static ArrayList<String> sendfile = new ArrayList<String>();
+	static ArrayList<String> acceptfile = new ArrayList<String>();
 
 	public static synchronized boolean registerUser(String name, ChatModelEvents client) {
 		if (!existUserName(name) && !name.equals("")) {
@@ -98,20 +98,19 @@ public class ChatModel  {
 	public static synchronized void leaveRoom(String room, String user) {
 		if (!existUserName(user) || !existRoom(room)) {
 			return;
-			}
-			roomList.get(room).unregisterUser(user);
-			if (roomList.get(room).userCount() == 0) {
+		}
+		roomList.get(room).unregisterUser(user);
+		if (roomList.get(room).userCount() == 0) {
 			roomList.remove(room);
-			}
+		}
 	}
 
 	public static synchronized void roomSendChatMessage(String room, String from, String message) {
 		if (!existUserName(from) || !existRoom(room)) {
 			return;
-			}
-			roomList.get(room).chatMessage(from, message);
-			
-		
+		}
+		roomList.get(room).chatMessage(from, message);
+
 	}
 
 	public static synchronized Collection<String> getRooms() {
@@ -119,37 +118,51 @@ public class ChatModel  {
 	}
 
 	public static synchronized Collection<String> roomGetUserList(String room) {
-		//if (!existRoom(room)) return null;
-			return roomList.get(room).userList();
-		
-		
+		// if (!existRoom(room)) return null;
+		return roomList.get(room).userList();
+
 	}
 
 	public static synchronized boolean roomHasUser(String room, String user) {
-		if (roomList.get(room).hasUser(user)) {	
+		if (roomList.get(room).hasUser(user)) {
 			return true;
-			}
+		}
 		return false;
 	}
+
 	public static void sendFile(String from, String to, String fName, File f) {
-		if(existUserName(to) && existUserName(from)) {
-		clientList.get(to).fileSent(from, fName, f);
+		if (existUserName(to) && existUserName(from)) {
+			if (acceptfile.contains(to)) {
+				acceptfile.remove(to);
+				clientList.get(to).fileSent(from, fName, f);
+			}
 		}
 	}
-	
-	public static void sendProposeFile(String from,String to, String fName) {
-		if(existUserName(to) && existUserName(from)) {
+
+	public static void sendProposeFile(String from, String to, String fName) {
+		if (existUserName(to) && existUserName(from)) {
+			sendfile.add(to);
 			clientList.get(to).proposeFileSent(from, fName);
 		}
 	}
-	public static void sendAcceptFile(String from,String to, String fName) {
-		if(existUserName(to) && existUserName(from)) {
+
+	public static void sendAcceptFile(String from, String to, String fName) {
+		if (existUserName(to) && existUserName(from)) {
+			if (sendfile.contains(from)) {
+				acceptfile.add(from);
+				sendfile.remove(from);
 			clientList.get(to).acceptFileSent(to, fName);
+			}
 		}
+
 	}
-	public static void sendRefusFile(String from,String to, String fName) {
-		if(existUserName(to) && existUserName(from)) {
+
+	public static void sendRefusFile(String from, String to, String fName) {
+		if (existUserName(to) && existUserName(from)) {
+			if (sendfile.contains(to)) {
+				sendfile.remove(from);
 			clientList.get(to).refusFileSent(to, fName);
+			}
 		}
 	}
 }
